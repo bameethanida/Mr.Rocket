@@ -1,5 +1,5 @@
 import arcade
-from models import Ship,World,Alien_A,Alien_B
+from models import Ship,World,Alien_A,Alien_B,Bullet
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
@@ -14,6 +14,7 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite = ModelSprite('images/ship.png',model=self.world.ship)
         self.alien_A_sprite = ModelSprite('images/alienA.png',model=self.world.alien_A)
         self.alien_B_sprite = ModelSprite('images/alienB.png',model=self.world.alien_B)
+        self.bullet = ModelSprite('images/bullet.png', model=self.world.bullet)
 
     def set_up(self):
 
@@ -22,16 +23,18 @@ class SpaceGameWindow(arcade.Window):
     def on_draw(self):
 
         arcade.start_render()
-
         arcade.draw_texture_rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         self.ship_sprite.draw()
         self.alien_A_sprite.draw()
         self.alien_B_sprite.draw()
+        self.bullet.draw()
+
     
     def update(self, delta):
         self.world.update(delta)
 
     def on_key_press(self, key, key_modifiers):
+        self.world.bullet_on_key_press(key, key_modifiers)
         self.world.on_key_press(key, key_modifiers)
 
     def on_mouse_motion(self, x, y, dx, dy):

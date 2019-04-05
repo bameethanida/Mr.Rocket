@@ -39,7 +39,33 @@ class Alien_B:
             self.x = self.world.width - 1
             self.y = randint(50, SCREEN_HEIGHT - 50)
         self.x -= self.speed
-        
+
+class Bullet:
+    BULLET_SPEED = 20
+
+    def __init__(self, world, x, y):
+        self.world = world
+        self.x = x
+        self.y = y
+        self.vx = 0
+        self.number = 1
+        self.stat = [True, False, False]
+
+    def update(self, delta):
+        if self.x <= self.world.width and self.vx != 0:
+            self.x += self.vx
+        else:
+            self.bullet_set()
+
+    def attack(self):
+        self.vx = Bullet.BULLET_SPEED
+
+    def bullet_set(self):
+        self.x = 150
+        self.y = self.world.ship.y
+        self.vx = 0
+
+
 class World:
     def __init__(self, width, height):
         self.width = width
@@ -48,10 +74,20 @@ class World:
         self.ship = Ship(self, 100, 100)
         self.alien_A = Alien_A(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
         self.alien_B = Alien_B(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
+        self.bullet = Bullet(self, 150, 130)
 
     
     def on_key_press(self, key, key_modifiers):
         pass
+
+    def bullet_on_key_press(self, key, key_modifiers):
+        if key == arcade.key.SPACE:
+            self.bullet.attack()
+            if self.bullet.x >= 200 and (
+                    self.bullet.stat == [True, True, False] or self.bullet.stat == [True, True, True]):
+                self.bullet.attack()
+                if self.bullet.x >= 200 and self.bullet.x >= 200 and self.bullet.stat == [True, True, True]:
+                    self.bullet.attack()
 
     def on_mouse_motion(self, x, y, dx, dy):
         if (self.ship.y >= 50 and self.ship.y <= 700):
@@ -65,3 +101,4 @@ class World:
         self.ship.update(delta)
         self.alien_A.update(delta)
         self.alien_B.update(delta)
+        self.bullet.update(delta)
