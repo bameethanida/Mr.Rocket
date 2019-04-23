@@ -4,9 +4,15 @@ from random import randint
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
 
-BACKGROUND_SPEED = 2
+BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 4
+
+
 BULLET_SPEED = 12
+BULLET_RANGE = 1000
+BULLET_RADIUS = 32
+RANGE_START = 30
+
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -43,6 +49,11 @@ class Ship:
         self.direction = DIR_STILL
         self.next_direction = DIR_STILL
         self.speed = MOVEMENT_SPEED
+        self.current_direction = DIR_UP
+    
+    def set_current_direction(self):
+        if not self.direction == DIR_STILL:
+            self.current_direction = self.direction
     
     def move(self):
         if self.y > 700:
@@ -53,8 +64,9 @@ class Ship:
             self.direction = DIR_STILL
         else:
             self.y += self.speed * DIR_OFFSETS[self.direction][1]  
+    
 
- 
+
     def update(self, delta):
         self.move()
 
@@ -63,7 +75,7 @@ class Alien_A:
         self.world = world
         self.x = x
         self.y = y
-        self.speed = 1
+        self.speed = randint(1,3)
 
     def update(self, delta):
         if (self.x < 0):
@@ -76,7 +88,7 @@ class Alien_B:
         self.world = world
         self.x = x
         self.y = y
-        self.speed = 3
+        self.speed = randint(3,5)
 
     def update(self, delta):
         if (self.x < 0):
@@ -84,31 +96,35 @@ class Alien_B:
             self.y = randint(50, SCREEN_HEIGHT - 50)
         self.x -= self.speed
 
-# class Bullet:
-#     BULLET_SPEED = 20
+class Bullet:
+    def __init__(self, world, x, y):
+        self.world = world
+        self.x = x
+        self.y = y
+        self.direction = None
+    
+    def out_of_world(self):
+        if self.x + BULLET_RADIUS < 0 or self.x - BULLET_RADIUS > self.world.width:
+            return True
 
-#     def __init__(self, world, x, y):
-#         self.world = world
-#         self.x = x
-#         self.y = y
-#         self.vx = 0
-#         self.number = 1
-#         self.stat = [True, False, False]
 
-#     def update(self, delta):
-#         if self.x <= self.world.width and self.vx != 0:
-#             self.x += self.vx
-#         else:
-#             self.bullet_set()
-
-#     def attack(self):
-#         self.vx = Bullet.BULLET_SPEED
-
-#     def bullet_set(self):
-#         self.x = 150
-#         self.y = self.world.ship.y
-#         self.vx = 0
-
+class ShipBullet(Bullet):
+    def __init__(self,world,x,y):
+        super().__init__(world,x,y)
+        self.element = self.world.ship.element
+    
+    def move(self):
+        prev_direction = self.world.ship.current_direction
+        if not prev_direction == self.world.ship.current_direction or self.direction is None:
+            self.direction = prev_direction
+        self.x += BULLET_SPEED * DIR_OFFSETS[self.direction]
+    
+    def update(self,delta):
+        self.move()
+        if self.out_of_world():
+            if self.world.bullet != []:
+                self.world.bullet.remove(self)
+    
 
 class World:
     def __init__(self, width, height):
@@ -120,9 +136,10 @@ class World:
         self.ship = Ship(self, 100, 100)
         self.alien_A = Alien_A(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
         self.alien_B = Alien_B(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
-        # self.bullet = Bullet(self, 150, 130)
-        self.press = []
-        
+        self.bullet_list= []
+
+
+
     def moving_background(self):
         if self.background.x == -700:
             self.background.x = 2100
@@ -136,6 +153,10 @@ class World:
             self.ship.next_direction = KEY_MAP[key]
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
+        if key == arcade.key.SPACE:
+            bullet = ShipBullet(self, self.ship.x + (RANGE_START * DIR_OFFSETS[self.ship.current_direction]),
+                self.ship.y)
+            self.bullet_list.append(bullet)
     
     def ship_on_key_release(self, key, modifiers):
         if key in KEY_MAP:
@@ -147,16 +168,6 @@ class World:
                 self.ship.direction = self.ship.next_direction
 
 
-    # def bullet_on_key_press(self, key, key_modifiers):
-    #     if key == arcade.key.SPACE:
-    #         self.bullet.attack()
-    #         if self.bullet.x >= 200 and (
-    #                 self.bullet.stat == [True, True, False] or self.bullet.stat == [True, True, True]):
-    #             self.bullet.attack()
-    #             if self.bullet.x >= 200 and self.bullet.x >= 200 and self.bullet.stat == [True, True, True]:
-    #                 self.bullet.attack()
-
-
     def update(self, delta):
         self.background.update(delta)
         self.background2.update(delta)
@@ -164,4 +175,5 @@ class World:
         self.ship.update(delta)
         self.alien_A.update(delta)
         self.alien_B.update(delta)
-        # self.bullet.update(delta)
+        for i in self.bullet_list:
+            i.update(delta)
