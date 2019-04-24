@@ -24,7 +24,7 @@ class BulletSprite:
         self.bullet_list = bullet_list
     
     def draw_sprite(self, sprite, x, y):
-        sprite.set_position(x,y)
+        sprite.set_position(x, y)
         sprite.draw()
 
     def draw(self):

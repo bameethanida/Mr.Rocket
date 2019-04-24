@@ -94,6 +94,7 @@ class Alien_B:
             self.y = randint(50, SCREEN_HEIGHT - 50)
         self.x -= self.speed
 
+
 class Bullet:
     def __init__(self, world, x, y):
         self.world = world
@@ -118,7 +119,8 @@ class ShipBullet(Bullet):
         if self.out_of_world():
             if self.world.bullet_list != []:
                 self.world.bullet_list.remove(self)
-    
+
+
 
 class World:
     def __init__(self, width, height):
@@ -130,9 +132,7 @@ class World:
         self.ship = Ship(self, 100, 100)
         self.alien_A = Alien_A(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
         self.alien_B = Alien_B(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
-        self.bullet_list= []
-
-
+        self.bullet_list = []
 
     def moving_background(self):
         if self.background.x == -700:
