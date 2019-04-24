@@ -1,5 +1,5 @@
 import arcade.key
-from random import randint
+from random import randint,random
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
@@ -72,30 +72,23 @@ class Ship:
 
 
 class Alien:
-    def __init__(self, world, x, y, speed = 0, hp_alien):
+    def __init__(self, world, hp_alien):
         self.world = world
-        self.x = x
-        self.y = y
+        self.x = self.world.width - 1
+        self.y = randint(50, SCREEN_HEIGHT - 50)
         self.speed = random.choices(SPEED_ALIEN_CHOICE, weight = [60, 30, 10])
         self.hp_alien = hp_alien
-        self.current_direction = DIR_STILL
-        self.direction = None
 
     def random_height(self):
         if (self.x < 0):
             self.x = self.world.width - 1
             self.y = randint(50, SCREEN_HEIGHT - 50)
-        self.x -= self.speed
-        
-    def move(self):
-        if self.direction != DIR_STILL:
-            self.current_direction = self.direction
-        self.random_height()
 
+    def move(self):
+        self.x -= self.speed
 
     def update(self, delta):
-        if self.direction is None:
-            self.random_direction()
+        self.random_height()
         self.move()
 
 
@@ -134,6 +127,8 @@ class World:
         self.background2 = Background(self,2100,375)
         self.ship = Ship(self, 100, 100)
         self.bullet_list = []
+        self.alien_list = []
+
 
     def moving_background(self):
         if self.background.x == -700:
@@ -142,6 +137,8 @@ class World:
         if self.background2.x == -700:
             self.background2.x = 2100
     
+    def generate_alien(self):
+        pass
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -171,4 +168,5 @@ class World:
         self.ship.update(delta)
         for i in self.bullet_list:
             i.update(delta)
-        
+        for i in self.alien_list:
+            i.update(delta)
