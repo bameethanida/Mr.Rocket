@@ -17,6 +17,20 @@ class ModelSprite(arcade.Sprite):
         self.sync_with_model()
         super().draw()
 
+
+class BulletSprite:
+    def __init__(self,bullet_list):
+        self.bullet = arcade.Sprite('./images/bullet.png')
+        self.bullet_list = bullet_list
+    
+    def draw_sprite(self, sprite, x, y):
+        sprite.set_position(x,y)
+        sprite.draw()
+
+    def draw(self):
+        for bullet in self.bullet_list:
+            self.draw_sprite(self.bullet, bullet.x, bullet.y)
+
 class SpaceGameWindow(arcade.Window):
     def __init__(self, width, height):
 
@@ -28,8 +42,7 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
         self.alien_A_sprite = ModelSprite('./images/alienA.png',model=self.world.alien_A)
         self.alien_B_sprite = ModelSprite('./images/alienB.png',model=self.world.alien_B)
-        self.bullet = ModelSprite('./images/bullet.png',model=self.world.bullet_list)
-
+        self.bullet = BulletSprite(self.world.bullet_list)
 
     def on_draw(self):
 
@@ -40,9 +53,7 @@ class SpaceGameWindow(arcade.Window):
         self.alien_A_sprite.draw()
         self.alien_B_sprite.draw()
         self.bullet.draw()
-
         
-    
     def update(self, delta):
         self.world.update(delta)
 
@@ -51,8 +62,6 @@ class SpaceGameWindow(arcade.Window):
     
     def on_key_release(self, key, key_modifiers):
         self.world.ship_on_key_release(key,key_modifiers)
-
-
 
 
 def main():

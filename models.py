@@ -63,9 +63,7 @@ class Ship:
             self.y = 50
             self.direction = DIR_STILL
         else:
-            self.y += self.speed * DIR_OFFSETS[self.direction][1]  
-    
-
+            self.y += self.speed * DIR_OFFSETS[self.direction][1]
 
     def update(self, delta):
         self.move()
@@ -111,19 +109,15 @@ class Bullet:
 class ShipBullet(Bullet):
     def __init__(self,world,x,y):
         super().__init__(world,x,y)
-        self.element = self.world.ship.element
     
     def move(self):
-        prev_direction = self.world.ship.current_direction
-        if not prev_direction == self.world.ship.current_direction or self.direction is None:
-            self.direction = prev_direction
-        self.x += BULLET_SPEED * DIR_OFFSETS[self.direction]
+        self.x += BULLET_SPEED * DIR_OFFSETS[DIR_RIGHT][0]
     
     def update(self,delta):
         self.move()
         if self.out_of_world():
-            if self.world.bullet != []:
-                self.world.bullet.remove(self)
+            if self.world.bullet_list != []:
+                self.world.bullet_list.remove(self)
     
 
 class World:
@@ -154,7 +148,7 @@ class World:
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
         if key == arcade.key.SPACE:
-            bullet = ShipBullet(self, self.ship.x + (RANGE_START * DIR_OFFSETS[self.ship.current_direction]),
+            bullet = ShipBullet(self, self.ship.x + (RANGE_START * DIR_OFFSETS[self.ship.current_direction][0]),
                 self.ship.y)
             self.bullet_list.append(bullet)
     
