@@ -5,10 +5,10 @@ SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
 
 BACKGROUND_SPEED = 1
-MOVEMENT_SPEED = 4
+MOVEMENT_SPEED = 6
 
 
-BULLET_SPEED = 12
+BULLET_SPEED = 15
 BULLET_RANGE = 1000
 BULLET_RADIUS = 32
 RANGE_START = 30
@@ -30,6 +30,8 @@ KEY_MAP = {arcade.key.UP: DIR_UP,
            arcade.key.DOWN: DIR_DOWN,
            arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT, }
+
+SPEED_ALIEN_CHOICE = [randint(2,4), randint(5,7), 10]
 
 class Background:
     def __init__(self, world, x,y):
@@ -68,31 +70,33 @@ class Ship:
     def update(self, delta):
         self.move()
 
-class Alien_A:
-    def __init__(self, world, x, y, speed=0):
+
+class Alien:
+    def __init__(self, world, x, y, speed = 0, hp_alien):
         self.world = world
         self.x = x
         self.y = y
-        self.speed = randint(1,3)
+        self.speed = random.choices(SPEED_ALIEN_CHOICE, weight = [60, 30, 10])
+        self.hp_alien = hp_alien
+        self.current_direction = DIR_STILL
+        self.direction = None
 
-    def update(self, delta):
+    def random_height(self):
         if (self.x < 0):
             self.x = self.world.width - 1
             self.y = randint(50, SCREEN_HEIGHT - 50)
         self.x -= self.speed
         
-class Alien_B:
-    def __init__(self, world, x, y, speed=0):
-        self.world = world
-        self.x = x
-        self.y = y
-        self.speed = randint(3,5)
+    def move(self):
+        if self.direction != DIR_STILL:
+            self.current_direction = self.direction
+        self.random_height()
+
 
     def update(self, delta):
-        if (self.x < 0):
-            self.x = self.world.width - 1
-            self.y = randint(50, SCREEN_HEIGHT - 50)
-        self.x -= self.speed
+        if self.direction is None:
+            self.random_direction()
+        self.move()
 
 
 class Bullet:
@@ -124,14 +128,11 @@ class ShipBullet(Bullet):
 
 class World:
     def __init__(self, width, height):
-
         self.width = width
         self.height = height
         self.background = Background(self,700,375)
         self.background2 = Background(self,2100,375)
         self.ship = Ship(self, 100, 100)
-        self.alien_A = Alien_A(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
-        self.alien_B = Alien_B(self, SCREEN_WIDTH - 1, randint(50, SCREEN_HEIGHT - 50))
         self.bullet_list = []
 
     def moving_background(self):
@@ -139,7 +140,8 @@ class World:
             self.background.x = 2100
 
         if self.background2.x == -700:
-            self.background2.x = 2100 
+            self.background2.x = 2100
+    
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -167,7 +169,6 @@ class World:
         self.background2.update(delta)
         self.moving_background()
         self.ship.update(delta)
-        self.alien_A.update(delta)
-        self.alien_B.update(delta)
         for i in self.bullet_list:
             i.update(delta)
+        

@@ -1,5 +1,5 @@
 import arcade
-from models import Ship,World,Alien_A,Alien_B,Background,Bullet,ShipBullet
+from models import Ship,World,Background,Bullet,ShipBullet,Alien
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
 
@@ -31,6 +31,8 @@ class BulletSprite:
         for bullet in self.bullet_list:
             self.draw_sprite(self.bullet, bullet.x, bullet.y)
 
+
+
 class SpaceGameWindow(arcade.Window):
     def __init__(self, width, height):
 
@@ -40,20 +42,15 @@ class SpaceGameWindow(arcade.Window):
         self.background_sprite = ModelSprite('./images/background.jpg', model=self.world.background)
         self.background_sprite_2 = ModelSprite('./images/background2.jpg', model=self.world.background2)
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
-        self.alien_A_sprite = ModelSprite('./images/alienA.png',model=self.world.alien_A)
-        self.alien_B_sprite = ModelSprite('./images/alienB.png',model=self.world.alien_B)
         self.bullet = BulletSprite(self.world.bullet_list)
 
     def on_draw(self):
-
         arcade.start_render()
         self.background_sprite.draw()
         self.background_sprite_2.draw()
         self.ship_sprite.draw()
-        self.alien_A_sprite.draw()
-        self.alien_B_sprite.draw()
         self.bullet.draw()
-        
+    
     def update(self, delta):
         self.world.update(delta)
 
