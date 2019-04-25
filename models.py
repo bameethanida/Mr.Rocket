@@ -18,6 +18,7 @@ BULLET_DAMAGE = 1
 INDEX = [0,1,2]
 SPEED_ALIEN_CHOICE = [randint(2,3), randint(4,5), 6]
 HP_ALIEN_CHOICE = [1, 3, 5]
+SCORE_ALIEN_CHOICE = [5, 10, 20]
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -94,7 +95,9 @@ class Alien:
         self.index = choices(INDEX, weights = [4, 2, 1])
         self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
         self.hp_alien = HP_ALIEN_CHOICE[self.index[0]]
+        self.score_alien = SCORE_ALIEN_CHOICE[self.index[0]]
         self.is_dead = False
+
 
     def move(self):
         self.x -= self.speed
@@ -106,7 +109,7 @@ class Alien:
     def remove_alien(self):
         if self.x < 0 or self.is_dead == True:
             self.world.alien_list.remove(self)
-            
+
     
     def update(self, delta):
         self.move()
@@ -131,7 +134,6 @@ class ShipBullet:
                 i.hp_alien -= BULLET_DAMAGE
                 self.world.bullet_list.remove(self)
 
-
     def move(self):
         self.x += BULLET_SPEED * DIR_OFFSETS[DIR_RIGHT][0]
     
@@ -153,7 +155,7 @@ class World:
         self.bullet_list = []
         self.alien_list = []
         self.frame = 0
-
+        self.score = 0
 
     def moving_background(self):
         if self.background.x == -700:
@@ -165,6 +167,7 @@ class World:
     def generate_alien(self):
         if self.frame % 60 == 0 and len(self.alien_list) <= 10:
             self.alien_list.append(Alien(self))
+
 
 
     def ship_on_key_press(self, key, key_modifiers):
