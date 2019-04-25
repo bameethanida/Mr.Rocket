@@ -7,6 +7,7 @@ SCREEN_HEIGHT = 750
 BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 10
 
+HP_SHIP = 100
 
 BULLET_SPEED = 15
 BULLET_RANGE = 1000
@@ -56,7 +57,14 @@ class Ship:
         self.next_direction = DIR_STILL
         self.speed = MOVEMENT_SPEED
         self.current_direction = DIR_UP
+        self.hp_ship = HP_SHIP
+        self.is_dead = False
     
+    def ship_dead(self):
+        if self.hp_ship <= 0:
+            self.is_dead = True
+
+
     def set_current_direction(self):
         if not self.direction == DIR_STILL:
             self.current_direction = self.direction
@@ -73,6 +81,9 @@ class Ship:
 
     def update(self, delta):
         self.move()
+        self.ship_dead()
+
+
 
 
 class Alien:
@@ -95,6 +106,7 @@ class Alien:
     def remove_alien(self):
         if self.x < 0 or self.is_dead == True:
             self.world.alien_list.remove(self)
+            
     
     def update(self, delta):
         self.move()
