@@ -1,5 +1,5 @@
 import arcade.key
-from random import randint,random
+from random import randint,choices
 
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
@@ -13,6 +13,9 @@ BULLET_RANGE = 1000
 BULLET_RADIUS = 32
 RANGE_START = 30
 
+index = [0,1,2]
+SPEED_ALIEN_CHOICE = [randint(2,3), randint(4,5), 6]
+HP_ALIEN_CHOICE = [3, 5, 10]
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -31,7 +34,7 @@ KEY_MAP = {arcade.key.UP: DIR_UP,
            arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT, }
 
-SPEED_ALIEN_CHOICE = [randint(2,4), randint(5,7), 10]
+
 
 class Background:
     def __init__(self, world, x,y):
@@ -72,23 +75,19 @@ class Ship:
 
 
 class Alien:
-    def __init__(self, world, hp_alien):
+    def __init__(self, world):
         self.world = world
         self.x = self.world.width - 1
         self.y = randint(50, SCREEN_HEIGHT - 50)
-        self.speed = random.choices(SPEED_ALIEN_CHOICE, weight = [60, 30, 10])
-        self.hp_alien = hp_alien
+        self.index = choices(index, weights = [5, 3, 1])
+        self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
+        self.hp_alien = HP_ALIEN_CHOICE[self.index[0]]
 
-    def random_height(self):
-        if (self.x < 0):
-            self.x = self.world.width - 1
-            self.y = randint(50, SCREEN_HEIGHT - 50)
 
     def move(self):
         self.x -= self.speed
 
     def update(self, delta):
-        self.random_height()
         self.move()
 
 
@@ -128,6 +127,7 @@ class World:
         self.ship = Ship(self, 100, 100)
         self.bullet_list = []
         self.alien_list = []
+        self.frame = 0
 
 
     def moving_background(self):
@@ -138,7 +138,9 @@ class World:
             self.background2.x = 2100
     
     def generate_alien(self):
-        pass
+        if self.frame % 60 == 0:
+            self.alien_list.append(Alien(self))
+
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -162,6 +164,8 @@ class World:
 
 
     def update(self, delta):
+        self.frame += 1
+        self.generate_alien()
         self.background.update(delta)
         self.background2.update(delta)
         self.moving_background()

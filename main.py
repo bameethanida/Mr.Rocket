@@ -31,6 +31,27 @@ class BulletSprite:
         for bullet in self.bullet_list:
             self.draw_sprite(self.bullet, bullet.x, bullet.y)
 
+class AlienSprite:
+    def __init__(self, alien_list):
+        self.alien_list = alien_list
+        self.alien = arcade.Sprite('./images/alien1.png')
+    
+
+    def draw_sprite(self, sprite, x, y):
+        sprite.set_position(x, y)
+        sprite.draw()
+    
+    def draw(self):
+        for a in self.alien_list:
+            if a.index[0] == 0:
+                self.alien = arcade.Sprite('./images/alien1.png')
+                self.draw_sprite(self.alien, a.x, a.y)
+            if a.index[0] == 1:
+                self.alien = arcade.Sprite('./images/alien2.png')
+                self.draw_sprite(self.alien, a.x, a.y)
+            if a.index[0] == 2:
+                self.alien = arcade.Sprite('./images/alien3.png')
+                self.draw_sprite(self.alien, a.x, a.y)
 
 
 class SpaceGameWindow(arcade.Window):
@@ -43,6 +64,7 @@ class SpaceGameWindow(arcade.Window):
         self.background_sprite_2 = ModelSprite('./images/background2.jpg', model=self.world.background2)
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
         self.bullet = BulletSprite(self.world.bullet_list)
+        self.alien = AlienSprite(self.world.alien_list)
 
     def on_draw(self):
         arcade.start_render()
@@ -50,6 +72,7 @@ class SpaceGameWindow(arcade.Window):
         self.background_sprite_2.draw()
         self.ship_sprite.draw()
         self.bullet.draw()
+        self.alien.draw()
     
     def update(self, delta):
         self.world.update(delta)
