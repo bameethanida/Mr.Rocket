@@ -1,5 +1,7 @@
 import arcade
-from models import Ship,World,Background,Bullet,ShipBullet,Alien
+from models import Ship,World,Background,ShipBullet,Alien
+
+
 SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
 

@@ -5,17 +5,18 @@ SCREEN_WIDTH = 1400
 SCREEN_HEIGHT = 750
 
 BACKGROUND_SPEED = 1
-MOVEMENT_SPEED = 6
+MOVEMENT_SPEED = 10
 
 
 BULLET_SPEED = 15
 BULLET_RANGE = 1000
 BULLET_RADIUS = 32
 RANGE_START = 30
+BULLET_DAMAGE = 1
 
-index = [0,1,2]
+INDEX = [0,1,2]
 SPEED_ALIEN_CHOICE = [randint(2,3), randint(4,5), 6]
-HP_ALIEN_CHOICE = [3, 5, 10]
+HP_ALIEN_CHOICE = [1, 3, 5]
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -79,19 +80,29 @@ class Alien:
         self.world = world
         self.x = self.world.width - 1
         self.y = randint(50, SCREEN_HEIGHT - 50)
-        self.index = choices(index, weights = [5, 3, 1])
+        self.index = choices(INDEX, weights = [4, 2, 1])
         self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
         self.hp_alien = HP_ALIEN_CHOICE[self.index[0]]
-
+        self.is_dead = False
 
     def move(self):
         self.x -= self.speed
-
+    
+    def alien_dead(self):
+        if self.hp_alien <= 0:
+            self.is_dead = True
+    
+    def remove_alien(self):
+        if self.x < 0 or self.is_dead == True:
+            self.world.alien_list.remove(self)
+    
     def update(self, delta):
         self.move()
+        self.alien_dead()
+        self.remove_alien()
 
 
-class Bullet:
+class ShipBullet:
     def __init__(self, world, x, y):
         self.world = world
         self.x = x
@@ -101,21 +112,23 @@ class Bullet:
     def out_of_world(self):
         if self.x + BULLET_RADIUS < 0 or self.x - BULLET_RADIUS > self.world.width:
             return True
-
-
-class ShipBullet(Bullet):
-    def __init__(self,world,x,y):
-        super().__init__(world,x,y)
     
+    def check_bullet_hit_alien(self):
+        for i in self.world.alien_list:
+            if abs(self.x - i.x) <= 20 and abs(self.y - i.y) <= 20:
+                i.hp_alien -= BULLET_DAMAGE
+                self.world.bullet_list.remove(self)
+
+
     def move(self):
         self.x += BULLET_SPEED * DIR_OFFSETS[DIR_RIGHT][0]
     
     def update(self,delta):
         self.move()
+        self.check_bullet_hit_alien()
         if self.out_of_world():
             if self.world.bullet_list != []:
                 self.world.bullet_list.remove(self)
-
 
 
 class World:
@@ -138,7 +151,7 @@ class World:
             self.background2.x = 2100
     
     def generate_alien(self):
-        if self.frame % 60 == 0:
+        if self.frame % 60 == 0 and len(self.alien_list) <= 10:
             self.alien_list.append(Alien(self))
 
 
@@ -174,3 +187,4 @@ class World:
             i.update(delta)
         for i in self.alien_list:
             i.update(delta)
+        
