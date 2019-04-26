@@ -68,7 +68,7 @@ class SpaceGameWindow(arcade.Window):
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
 
-    
+
     def on_draw(self):
         arcade.start_render()
         self.background_sprite.draw()
@@ -76,7 +76,7 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite.draw()
         self.bullet.draw()
         self.alien.draw()
-        arcade.draw_text("Score : " + str(self.world.score), 1000, 650, arcade.color.BLACK, 20)
+        arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 300, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
 
     def update(self, delta):
         self.world.update(delta)
