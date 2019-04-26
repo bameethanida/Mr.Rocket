@@ -108,6 +108,7 @@ class Alien:
     
     def remove_alien(self):
         if self.x < 0 or self.is_dead == True:
+            self.world.score += self.score_alien
             self.world.alien_list.remove(self)
 
     
@@ -168,11 +169,6 @@ class World:
         if self.frame % 60 == 0 and len(self.alien_list) <= 10:
             self.alien_list.append(Alien(self))
 
-    def generate_score(self):
-        for i in self.alien_list:
-            if i.is_dead == True:
-                self.score += i.score_alien
-
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -198,7 +194,6 @@ class World:
     def update(self, delta):
         self.frame += 1
         self.generate_alien()
-        self.generate_score()
         self.background.update(delta)
         self.background2.update(delta)
         self.moving_background()
