@@ -70,13 +70,22 @@ class SpaceGameWindow(arcade.Window):
 
 
     def on_draw(self):
+
         arcade.start_render()
+
         self.background_sprite.draw()
         self.background_sprite_2.draw()
         self.ship_sprite.draw()
         self.bullet.draw()
         self.alien.draw()
+        
+        # draw score
         arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 300, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
+
+        # draw hp_bar
+        arcade.draw_xywh_rectangle_filled(SCREEN_WIDTH - 300, SCREEN_HEIGHT - 50, self.world.ship.hp_ship * 2.5, 20, arcade.color.BANANA_YELLOW)
+        arcade.draw_xywh_rectangle_outline(SCREEN_WIDTH - 300, SCREEN_HEIGHT - 50, 250, 20, arcade.color.BLACK) 
+
 
     def update(self, delta):
         self.world.update(delta)
