@@ -7,7 +7,7 @@ SCREEN_HEIGHT = 750
 BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 10
 
-STAR_SPEED = randint(3,5)
+STAR_SPEED = 10
 
 HP_SHIP = 3
 
@@ -121,14 +121,14 @@ class Alien:
         self.remove_alien()
 
 class Star:
-    def __init__(self, world, x, y):
+    def __init__(self, world):
         self.world = world
         self.x = self.world.width - 1
         self.y = randint(50, SCREEN_HEIGHT - 50)
-        self.star_speed = STAR_SPEED 
+        self.speed = STAR_SPEED 
 
     def move(self):
-        self.x -= self.star_speed
+        self.x -= self.speed
 
     def check_ship_hit_star(self):
         pass
@@ -141,6 +141,7 @@ class Star:
         
     def update(self, delta):
         self.move()
+        self.remove_star()
 
 
 class ShipBullet:
@@ -197,8 +198,8 @@ class World:
             self.alien_list.append(Alien(self))
 
     def generate_star(self):
-        if self.frame % 600 == 0 and len(self.score_list) <= 1:
-            self.score_list.append(Star(self))
+        if self.frame % 600 == 0 and len(self.star_list) <= 0:
+            self.star_list.append(Star(self))
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -232,4 +233,6 @@ class World:
         for i in self.bullet_list:
             i.update(delta)
         for i in self.alien_list:
+            i.update(delta)
+        for i in self.star_list:
             i.update(delta)

@@ -67,7 +67,10 @@ class SpaceGameWindow(arcade.Window):
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
 
-
+    def draw_star(self):
+        for i in self.world.star_list:
+            ModelSprite('./images/fullstar.png',model=i, scale = 0.019).draw()
+    
 
     def draw_star_bar(self):
 
@@ -100,6 +103,7 @@ class SpaceGameWindow(arcade.Window):
         self.bullet.draw()
         self.alien.draw()
         self.draw_star_bar()
+        self.draw_star()
         
         # draw score
         arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 200, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
