@@ -68,7 +68,27 @@ class SpaceGameWindow(arcade.Window):
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
 
+    def draw_star_bar(self):
 
+        pic1 = ['images/fullstar.png', 'images/fullstar.png', 'images/fullstar.png']
+        pic2 = ['images/fullstar.png', 'images/fullstar.png', 'images/emptystar.png']
+        pic3 = ['images/fullstar.png', 'images/emptystar.png', 'images/emptystar.png']
+
+        count = 0
+
+        for i in range(1200,1300,45):
+            if self.world.ship.hp_ship == 1:
+                a = arcade.Sprite(pic3[count], scale = 0.019)
+            elif self.world.ship.hp_ship == 2:
+                a = arcade.Sprite(pic2[count], scale = 0.019)
+            else:
+                a = arcade.Sprite(pic1[count], scale = 0.019)
+            a.center_x = i
+            a.center_y = SCREEN_HEIGHT - 50
+            a.draw()
+            count += 1
+
+        
     def on_draw(self):
 
         arcade.start_render()
@@ -78,13 +98,13 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite.draw()
         self.bullet.draw()
         self.alien.draw()
+        self.draw_star_bar()
         
         # draw score
-        arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 300, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
+        arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 200, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
+    
 
-        # draw hp_bar
-        arcade.draw_xywh_rectangle_filled(SCREEN_WIDTH - 300, SCREEN_HEIGHT - 50, self.world.ship.hp_ship * 2.5, 20, arcade.color.BANANA_YELLOW)
-        arcade.draw_xywh_rectangle_outline(SCREEN_WIDTH - 300, SCREEN_HEIGHT - 50, 250, 20, arcade.color.BLACK) 
+        
 
 
     def update(self, delta):

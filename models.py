@@ -7,7 +7,7 @@ SCREEN_HEIGHT = 750
 BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 10
 
-HP_SHIP = 100
+HP_SHIP = 3
 
 BULLET_SPEED = 15
 BULLET_RANGE = 1000
@@ -110,11 +110,10 @@ class Alien:
             self.is_dead = True
     
     def remove_alien(self):
-        
         if self.x < 0:
             self.world.score -= self.reduce_score_alien
             self.world.alien_list.remove(self)
-
+            
         elif self.is_dead == True:
             self.world.score += self.score_alien
             self.world.alien_list.remove(self)
