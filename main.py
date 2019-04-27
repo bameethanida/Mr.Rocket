@@ -1,5 +1,5 @@
 import arcade
-from models import Ship,World,Background,ShipBullet,Alien
+from models import Ship,World,Background,ShipBullet,Alien,Star
 
 
 SCREEN_WIDTH = 1400
@@ -67,6 +67,7 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
+
 
     def draw_star_bar(self):
 

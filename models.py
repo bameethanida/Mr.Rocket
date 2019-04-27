@@ -7,6 +7,8 @@ SCREEN_HEIGHT = 750
 BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 10
 
+STAR_SPEED = randint(3,5)
+
 HP_SHIP = 3
 
 BULLET_SPEED = 15
@@ -101,7 +103,6 @@ class Alien:
         self.reduce_score_alien = REDUCE_ALIEN_CHOICE[self.index[0]]
         self.is_dead = False
 
-
     def move(self):
         self.x -= self.speed
     
@@ -118,11 +119,24 @@ class Alien:
             self.world.score += self.score_alien
             self.world.alien_list.remove(self)
 
-    
     def update(self, delta):
         self.move()
         self.alien_dead()
         self.remove_alien()
+
+class Star:
+    def __init__(self, world, x, y):
+        self.world = world
+        self.x = self.world.width - 1
+        self.y = randint(50, SCREEN_HEIGHT - 50)
+        self.star_speed = STAR_SPEED 
+
+    def move(self):
+        self.x -= self.star_speed
+
+
+    def update(self, delta):
+        self.move()
 
 
 class ShipBullet:
@@ -153,6 +167,7 @@ class ShipBullet:
                 self.world.bullet_list.remove(self)
 
 
+
 class World:
     def __init__(self, width, height):
         self.width = width
@@ -162,6 +177,7 @@ class World:
         self.ship = Ship(self, 100, 100)
         self.bullet_list = []
         self.alien_list = []
+        self.star_list = []
         self.frame = 0
         self.score = 0
 
@@ -176,6 +192,9 @@ class World:
         if self.frame % 60 == 0 and len(self.alien_list) <= 10:
             self.alien_list.append(Alien(self))
 
+    def generate_star(self):
+        if self.frame % 600 == 0 and len(self.score_list) <= 1:
+            self.score_list.append(Star(self))
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -184,8 +203,7 @@ class World:
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
         if key == arcade.key.SPACE:
-            bullet = ShipBullet(self, self.ship.x + (RANGE_START * DIR_OFFSETS[self.ship.current_direction][0]),
-                self.ship.y)
+            bullet = ShipBullet(self, self.ship.x + (RANGE_START * DIR_OFFSETS[self.ship.current_direction][0]), self.ship.y)
             self.bullet_list.append(bullet)
     
     def ship_on_key_release(self, key, modifiers):
@@ -201,10 +219,12 @@ class World:
     def update(self, delta):
         self.frame += 1
         self.generate_alien()
+        self.generate_star()
         self.background.update(delta)
         self.background2.update(delta)
         self.moving_background()
         self.ship.update(delta)
+
         for i in self.bullet_list:
             i.update(delta)
         for i in self.alien_list:
