@@ -1,5 +1,5 @@
 import arcade
-from models import Ship,World,Background,ShipBullet,Alien,Star
+from models import Ship,World,Background,ShipBullet,Alien
 
 
 SCREEN_WIDTH = 1400
@@ -55,7 +55,6 @@ class AlienSprite:
                 self.alien = arcade.Sprite('./images/alien3.png')
                 self.draw_sprite(self.alien, a.x, a.y)
 
-
 class SpaceGameWindow(arcade.Window):
     def __init__(self, width, height):
 
@@ -67,6 +66,7 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
+
 
 
     def draw_star_bar(self):
@@ -104,9 +104,6 @@ class SpaceGameWindow(arcade.Window):
         # draw score
         arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 200, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
     
-
-        
-
 
     def update(self, delta):
         self.world.update(delta)

@@ -88,9 +88,6 @@ class Ship:
         self.move()
         self.ship_dead()
 
-
-
-
 class Alien:
     def __init__(self, world):
         self.world = world
@@ -113,8 +110,7 @@ class Alien:
     def remove_alien(self):
         if self.x < 0:
             self.world.score -= self.reduce_score_alien
-            self.world.alien_list.remove(self)
-            
+            self.world.alien_list.remove(self) 
         elif self.is_dead == True:
             self.world.score += self.score_alien
             self.world.alien_list.remove(self)
@@ -134,7 +130,15 @@ class Star:
     def move(self):
         self.x -= self.star_speed
 
+    def check_ship_hit_star(self):
+        pass
 
+    def remove_star(self):
+        if self.x < 0:
+            self.world.star_list.remove(self)
+        else:
+            pass
+        
     def update(self, delta):
         self.move()
 
