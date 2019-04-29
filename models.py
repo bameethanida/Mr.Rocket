@@ -47,7 +47,6 @@ class Background:
 
     def update(self, delta):
         self.x -= BACKGROUND_SPEED
-    
 
 class Ship:
     def __init__(self, world, x, y):
@@ -71,8 +70,8 @@ class Ship:
             self.current_direction = self.direction
     
     def move(self):
-        if self.y > 700:
-            self.y = 700
+        if self.y > 650:
+            self.y = 650
             self.direction = DIR_STILL
         elif self.y < 50:
             self.y = 50
@@ -109,7 +108,6 @@ class Alien:
             self.world.score += self.score_alien
             self.world.alien_list.remove(self)
         
-
     def update(self, delta):
         self.move()
         self.alien_dead()
@@ -132,7 +130,6 @@ class Star:
     def update(self, delta):
         self.move()
         self.remove_star()
-
 
 class ShipBullet:
     def __init__(self, world, x, y):
@@ -173,6 +170,8 @@ class World:
         self.star_list = []
         self.frame = 0
         self.score = 0
+        self.game_over = False
+
 
     def moving_background(self):
         if self.background.x == -700:
@@ -203,7 +202,15 @@ class World:
                     self.star_list.remove(i)
                     if 0 < self.ship.hp_ship < 3:
                         self.ship.hp_ship += 1
+    
+    def set_up_new_game(self) :
+        self.score = 0
+        self.ship.hp_ship = 3
 
+    def game_over(self):
+        if self.ship.hp_ship == 0:
+            self.game_over == True
+            World.set_up_new_game(self)
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -224,9 +231,7 @@ class World:
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
 
-
     def update(self, delta):
-        self.frame += 1
         self.generate_alien()
         self.generate_star()
         self.background.update(delta)
@@ -235,6 +240,8 @@ class World:
         self.ship.update(delta)
         self.alien_hit_ship()
         self.collect_star()
+        self.game_over()
+        self.frame += 1
 
         for i in self.bullet_list:
             i.update(delta)
