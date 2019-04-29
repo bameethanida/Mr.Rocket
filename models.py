@@ -7,9 +7,7 @@ SCREEN_HEIGHT = 750
 BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 10
 
-STAR_SPEED = 10
-
-HP_SHIP = 3
+STAR_SPEED = 8
 
 BULLET_SPEED = 15
 BULLET_RANGE = 1000
@@ -22,7 +20,6 @@ SPEED_ALIEN_CHOICE = [randint(2,3), randint(4,5), 6]
 HP_ALIEN_CHOICE = [1, 3, 5]
 SCORE_ALIEN_CHOICE = [5, 10, 20]
 REDUCE_ALIEN_CHOICE = [2, 5, 10]
-
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -40,7 +37,6 @@ KEY_MAP = {arcade.key.UP: DIR_UP,
            arcade.key.DOWN: DIR_DOWN,
            arcade.key.LEFT: DIR_LEFT,
            arcade.key.RIGHT: DIR_RIGHT, }
-
 
 
 class Background:
@@ -62,7 +58,7 @@ class Ship:
         self.next_direction = DIR_STILL
         self.speed = MOVEMENT_SPEED
         self.current_direction = DIR_UP
-        self.hp_ship = HP_SHIP
+        self.hp_ship = 3
         self.is_dead = False
     
     def ship_dead(self):
@@ -111,9 +107,10 @@ class Alien:
         if self.x < 0:
             self.world.score -= self.reduce_score_alien
             self.world.alien_list.remove(self) 
-        elif self.is_dead == True:
-            self.world.score += self.score_alien
+        if self.is_dead == True:
+            self.world.score -= self.score_alien
             self.world.alien_list.remove(self)
+        
 
     def update(self, delta):
         self.move()
@@ -130,14 +127,9 @@ class Star:
     def move(self):
         self.x -= self.speed
 
-    def check_ship_hit_star(self):
-        pass
-
     def remove_star(self):
         if self.x < 0:
             self.world.star_list.remove(self)
-        else:
-            pass
         
     def update(self, delta):
         self.move()
@@ -171,8 +163,6 @@ class ShipBullet:
             if self.world.bullet_list != []:
                 self.world.bullet_list.remove(self)
 
-
-
 class World:
     def __init__(self, width, height):
         self.width = width
@@ -200,6 +190,23 @@ class World:
     def generate_star(self):
         if self.frame % 600 == 0 and len(self.star_list) <= 0:
             self.star_list.append(Star(self))
+    
+    def alien_hit_ship(self):
+        for i in self.alien_list:
+            if self.ship.x + 50 <= i.x <= self.ship.x + 100:
+                if self.ship.y - 50 <= i.y <= self.ship.y + 50:
+                    self.ship.hp_ship -= 1
+                    self.alien_list.remove(i)
+    
+    def collect_star(self):
+        for i in self.star_list:
+            if self.ship.x + 50 <= i.x <= self.ship.x + 100:
+                if self.ship.y - 50 <= i.y <= self.ship.y + 50:
+                    self.star_list.remove(i)
+                    if 0 < self.ship.hp_ship < 3:
+                        self.ship.hp_ship += 1
+
+
 
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
@@ -229,6 +236,8 @@ class World:
         self.background2.update(delta)
         self.moving_background()
         self.ship.update(delta)
+        self.alien_hit_ship()
+        self.collect_star()
 
         for i in self.bullet_list:
             i.update(delta)

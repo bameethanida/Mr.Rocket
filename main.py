@@ -81,16 +81,17 @@ class SpaceGameWindow(arcade.Window):
         count = 0
 
         for i in range(1200,1300,45):
-            if self.world.ship.hp_ship == 1:
-                a = arcade.Sprite(pic3[count], scale = 0.019)
-            elif self.world.ship.hp_ship == 2:
-                a = arcade.Sprite(pic2[count], scale = 0.019)
-            else:
-                a = arcade.Sprite(pic1[count], scale = 0.019)
-            a.center_x = i
-            a.center_y = SCREEN_HEIGHT - 50
-            a.draw()
-            count += 1
+            if not self.world.ship.is_dead:
+                if self.world.ship.hp_ship == 2:
+                    a = arcade.Sprite(pic2[count], scale = 0.019)
+                elif self.world.ship.hp_ship == 3:
+                    a = arcade.Sprite(pic1[count], scale = 0.019)
+                else:
+                    a = arcade.Sprite(pic3[count], scale = 0.019)
+                a.center_x = i
+                a.center_y = SCREEN_HEIGHT - 50
+                a.draw()
+                count += 1
 
         
     def on_draw(self):
