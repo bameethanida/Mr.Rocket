@@ -1,8 +1,8 @@
 import arcade.key
 from random import randint,choices
 
-SCREEN_WIDTH = 1400
-SCREEN_HEIGHT = 750
+SCREEN_WIDTH = 1100
+SCREEN_HEIGHT = 700
 
 BACKGROUND_SPEED = 1
 MOVEMENT_SPEED = 10
@@ -19,7 +19,7 @@ INDEX = [0,1,2]
 SPEED_ALIEN_CHOICE = [randint(2,3), randint(4,5), 6]
 HP_ALIEN_CHOICE = [1, 3, 5]
 SCORE_ALIEN_CHOICE = [5, 10, 20]
-REDUCE_ALIEN_CHOICE = [2, 5, 10]
+
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -93,7 +93,6 @@ class Alien:
         self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
         self.hp_alien = HP_ALIEN_CHOICE[self.index[0]]
         self.score_alien = SCORE_ALIEN_CHOICE[self.index[0]]
-        self.reduce_score_alien = REDUCE_ALIEN_CHOICE[self.index[0]]
         self.is_dead = False
 
     def move(self):
@@ -105,10 +104,9 @@ class Alien:
     
     def remove_alien(self):
         if self.x < 0:
-            self.world.score -= self.reduce_score_alien
             self.world.alien_list.remove(self) 
         if self.is_dead == True:
-            self.world.score -= self.score_alien
+            self.world.score += self.score_alien
             self.world.alien_list.remove(self)
         
 
@@ -205,7 +203,6 @@ class World:
                     self.star_list.remove(i)
                     if 0 < self.ship.hp_ship < 3:
                         self.ship.hp_ship += 1
-
 
 
     def ship_on_key_press(self, key, key_modifiers):

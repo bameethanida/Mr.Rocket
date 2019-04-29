@@ -2,8 +2,8 @@ import arcade
 from models import Ship,World,Background,ShipBullet,Alien
 
 
-SCREEN_WIDTH = 1400
-SCREEN_HEIGHT = 750
+SCREEN_WIDTH = 1100
+SCREEN_HEIGHT = 700
 
 class ModelSprite(arcade.Sprite):
     def __init__(self, *args, **kwargs):
@@ -18,7 +18,6 @@ class ModelSprite(arcade.Sprite):
     def draw(self):
         self.sync_with_model()
         super().draw()
-
 
 class BulletSprite:
     def __init__(self,bullet_list):
@@ -38,7 +37,6 @@ class AlienSprite:
         self.alien_list = alien_list
         self.alien = arcade.Sprite('./images/alien1.png')
     
-
     def draw_sprite(self, sprite, x, y):
         sprite.set_position(x, y)
         sprite.draw()
@@ -79,15 +77,14 @@ class SpaceGameWindow(arcade.Window):
         pic3 = ['images/fullstar.png', 'images/emptystar.png', 'images/emptystar.png']
 
         count = 0
-
-        for i in range(1200,1300,45):
+        for i in range(900, 1050, 70):
             if not self.world.ship.is_dead:
                 if self.world.ship.hp_ship == 2:
-                    a = arcade.Sprite(pic2[count], scale = 0.019)
+                    a = arcade.Sprite(pic2[count], scale = 0.03)
                 elif self.world.ship.hp_ship == 3:
-                    a = arcade.Sprite(pic1[count], scale = 0.019)
+                    a = arcade.Sprite(pic1[count], scale = 0.03)
                 else:
-                    a = arcade.Sprite(pic3[count], scale = 0.019)
+                    a = arcade.Sprite(pic3[count], scale = 0.03)
                 a.center_x = i
                 a.center_y = SCREEN_HEIGHT - 50
                 a.draw()
@@ -97,7 +94,6 @@ class SpaceGameWindow(arcade.Window):
     def on_draw(self):
 
         arcade.start_render()
-
         self.background_sprite.draw()
         self.background_sprite_2.draw()
         self.ship_sprite.draw()
@@ -107,7 +103,7 @@ class SpaceGameWindow(arcade.Window):
         self.draw_star()
         
         # draw score
-        arcade.draw_text("Score: " + str(self.world.score), SCREEN_WIDTH - 200, SCREEN_HEIGHT - 100, arcade.color.BLACK, 20)
+        arcade.draw_text("Score : " + str(self.world.score), SCREEN_WIDTH - 180, SCREEN_HEIGHT - 125, arcade.color.BLACK, 20)
     
 
     def update(self, delta):
@@ -118,7 +114,6 @@ class SpaceGameWindow(arcade.Window):
     
     def on_key_release(self, key, key_modifiers):
         self.world.ship_on_key_release(key,key_modifiers)
-
 
 def main():
     SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
