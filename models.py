@@ -240,7 +240,7 @@ class World:
         self.ship.update(delta)
         self.alien_hit_ship()
         self.collect_star()
-        self.game_over()
+        # self.game_over()
         self.frame += 1
 
         for i in self.bullet_list:
