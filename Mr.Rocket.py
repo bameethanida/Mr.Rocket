@@ -5,6 +5,11 @@ from models import Ship,World,Background,ShipBullet,Alien
 SCREEN_WIDTH = 1100
 SCREEN_HEIGHT = 700
 
+GAME_COVER = 0
+GAME_GUIDE = 1
+GAME_RUN = 2
+GAME_OVER = 3
+
 class ModelSprite(arcade.Sprite):
     def __init__(self, *args, **kwargs):
         self.model = kwargs.pop('model', None)
@@ -58,7 +63,12 @@ class SpaceGameWindow(arcade.Window):
 
         super().__init__(width, height)
 
+        self.game_cover = arcade.load_texture('images/cover.jpg')
         self.world = World(width, height)
+        self.set_mouse_visible(True)
+        self.current_window = GAME_COVER
+
+
         self.background_sprite = ModelSprite('./images/background.jpg', model=self.world.background)
         self.background_sprite_2 = ModelSprite('./images/background2.jpg', model=self.world.background2)
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
@@ -69,7 +79,6 @@ class SpaceGameWindow(arcade.Window):
         for i in self.world.star_list:
             ModelSprite('./images/fullstar.png',model=i, scale = 0.019).draw()
     
-
     def draw_star_bar(self):
 
         pic1 = ['images/fullstar.png', 'images/fullstar.png', 'images/fullstar.png']
@@ -90,10 +99,15 @@ class SpaceGameWindow(arcade.Window):
                 a.draw()
                 count += 1
 
-        
-    def on_draw(self):
+    def draw_game_cover(self):
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.game_cover)
+    
+    def draw_game_guide(self):
+        pass
 
-        arcade.start_render()
+    
+    def draw_game_running(self):
         self.background_sprite.draw()
         self.background_sprite_2.draw()
         self.ship_sprite.draw()
@@ -101,9 +115,28 @@ class SpaceGameWindow(arcade.Window):
         self.alien.draw()
         self.draw_star_bar()
         self.draw_star()
-        
-        # draw score
+         # draw score
         arcade.draw_text("Score : " + str(self.world.score), SCREEN_WIDTH - 180, SCREEN_HEIGHT - 125, arcade.color.BLACK, 20)
+
+    
+    def draw_game_over(self):
+        pass
+
+                                
+    def on_draw(self):
+
+        arcade.start_render()
+
+        if self.current_window == GAME_COVER:
+            self.draw_game_cover()
+        elif self.current_window == GAME_GUIDE:
+            self.draw_game_guide()
+        elif self.current_window == GAME_RUN:
+            self.draw_game_running()
+        else:
+            self.draw_game_over()
+
+
     
 
     def update(self, delta):
@@ -114,6 +147,16 @@ class SpaceGameWindow(arcade.Window):
     
     def on_key_release(self, key, key_modifiers):
         self.world.ship_on_key_release(key,key_modifiers)
+    
+    def on_mouse_motion(self):
+        pass
+    def on_mouse_press(self):
+        pass
+    def on_mouse_release(self):
+        pass
+    
+    
+    
 
 def main():
     SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
