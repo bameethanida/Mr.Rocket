@@ -58,6 +58,7 @@ class AlienSprite:
                 self.alien = arcade.Sprite('./images/alien3.png')
                 self.draw_sprite(self.alien, a.x, a.y)
 
+            
 class SpaceGameWindow(arcade.Window):
     def __init__(self, width, height):
 
@@ -67,6 +68,9 @@ class SpaceGameWindow(arcade.Window):
         self.world = World(width, height)
         self.set_mouse_visible(True)
         self.current_window = GAME_COVER
+        
+        self.game_guide = arcade.load_texture('images/game_guide.jpg')
+
 
 
         self.background_sprite = ModelSprite('./images/background.jpg', model=self.world.background)
@@ -74,6 +78,7 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
+
 
     def draw_star(self):
         for i in self.world.star_list:
@@ -99,12 +104,16 @@ class SpaceGameWindow(arcade.Window):
                 a.draw()
                 count += 1
 
+
     def draw_game_cover(self):
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.game_cover)
+        
     
     def draw_game_guide(self):
-        pass
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.game_guide)
+
 
     
     def draw_game_running(self):
@@ -148,12 +157,12 @@ class SpaceGameWindow(arcade.Window):
     def on_key_release(self, key, key_modifiers):
         self.world.ship_on_key_release(key,key_modifiers)
     
-    def on_mouse_motion(self):
-        pass
-    def on_mouse_press(self):
-        pass
-    def on_mouse_release(self):
-        pass
+    # def on_mouse_motion(self):
+    #     pass
+    # def on_mouse_press(self):
+    #     pass
+    # def on_mouse_release(self):
+    #     pass
     
     
     
