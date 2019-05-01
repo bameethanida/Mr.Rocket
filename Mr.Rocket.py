@@ -1,14 +1,12 @@
 import arcade
 from models import Ship,World,Background,ShipBullet,Alien
 
-
 SCREEN_WIDTH = 1100
 SCREEN_HEIGHT = 700
 
 GAME_COVER = 0
-GAME_GUIDE = 1
-GAME_RUN = 2
-GAME_OVER = 3
+GAME_RUN = 1
+GAME_OVER = 2
 
 class ModelSprite(arcade.Sprite):
     def __init__(self, *args, **kwargs):
@@ -66,12 +64,8 @@ class SpaceGameWindow(arcade.Window):
 
         self.game_cover = arcade.load_texture('images/cover.jpg')
         self.world = World(width, height)
-        self.set_mouse_visible(True)
+        self.set_mouse_visible(False)
         self.current_window = GAME_COVER
-        
-        self.game_guide = arcade.load_texture('images/game_guide.jpg')
-
-
 
         self.background_sprite = ModelSprite('./images/background.jpg', model=self.world.background)
         self.background_sprite_2 = ModelSprite('./images/background2.jpg', model=self.world.background2)
@@ -109,11 +103,6 @@ class SpaceGameWindow(arcade.Window):
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.game_cover)
         
-    
-    def draw_game_guide(self):
-        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.game_guide)
-
 
     
     def draw_game_running(self):
@@ -131,20 +120,18 @@ class SpaceGameWindow(arcade.Window):
     def draw_game_over(self):
         pass
 
-                                
+
+
     def on_draw(self):
 
         arcade.start_render()
 
         if self.current_window == GAME_COVER:
             self.draw_game_cover()
-        elif self.current_window == GAME_GUIDE:
-            self.draw_game_guide()
         elif self.current_window == GAME_RUN:
             self.draw_game_running()
         else:
             self.draw_game_over()
-
 
     
 
@@ -156,15 +143,6 @@ class SpaceGameWindow(arcade.Window):
     
     def on_key_release(self, key, key_modifiers):
         self.world.ship_on_key_release(key,key_modifiers)
-    
-    # def on_mouse_motion(self):
-    #     pass
-    # def on_mouse_press(self):
-    #     pass
-    # def on_mouse_release(self):
-    #     pass
-    
-    
     
 
 def main():
