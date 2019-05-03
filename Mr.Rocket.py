@@ -8,13 +8,13 @@ SCREEN_HEIGHT = 700
 routes = {
     'menu' : 0,
     'howtoplay' : 1,
-    'game' : 2,
+    'game' : 2
 }
 
-choices = {
-    'game' : 0,
-    'howtoplay' : 1,
-    'exit' : 2,
+choices = { 
+    0 : 'game',
+    1 : 'howtoplay',
+    2 : 'exit' 
 }
 
 class ModelSprite(arcade.Sprite):
@@ -109,6 +109,7 @@ class SpaceGameWindow(arcade.Window):
         self.start.center_x, self.start.center_y = self.width//2, self.height//2 + 50
         self.how_to_play.center_x, self.how_to_play.center_y = self.width//2, self.height//2 - 20
         self.start.select()
+        self.how_to_play.unselect()
 
         self.choice_list.append(self.start)
         self.choice_list.append(self.how_to_play)
@@ -173,7 +174,6 @@ class SpaceGameWindow(arcade.Window):
     
     def on_draw(self):
         arcade.start_render()
-
         if self.current_route == routes['menu']:
             self.draw_menu()
         elif self.current_route == routes['howtoplay']:
@@ -204,7 +204,6 @@ class SpaceGameWindow(arcade.Window):
         
         
     def on_key_press(self, key, key_modifiers):
-        self.world.ship_on_key_press(key, key_modifiers)
         if self.current_route == routes['menu']:
             if key == arcade.key.DOWN:
                 if self.selecting_choice < 2:
