@@ -45,7 +45,7 @@ class MenuChoiceSprite(arcade.AnimatedTimeSprite):
 
 class BulletSprite:
     def __init__(self,bullet_list):
-        self.bullet = arcade.Sprite('./images/bullet.png')
+        self.bullet = arcade.Sprite('./images/bullet.png', scale = 0.25)
         self.bullet_list = bullet_list
     
     def draw_sprite(self, sprite, x, y):
@@ -116,31 +116,31 @@ class SpaceGameWindow(arcade.Window):
 
     def game_setup(self, width, height):
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.background_sprite = ModelSprite('./images/background.jpg', model=self.world.background)
-        self.background_sprite_2 = ModelSprite('./images/background2.jpg', model=self.world.background2)
-        self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship)
+        self.background_sprite = ModelSprite('./images/background1.png', model=self.world.background)
+        self.background_sprite_2 = ModelSprite('./images/background2.png', model=self.world.background2)
+        self.ship_sprite = ModelSprite('./images/ship.png',model=self.world.ship, scale = 0.35)
         self.bullet = BulletSprite(self.world.bullet_list)
         self.alien = AlienSprite(self.world.alien_list)
 
 
     def draw_star(self):
         for i in self.world.star_list:
-            ModelSprite('./images/fullstar.png',model=i, scale = 0.019).draw()
+            ModelSprite('./images/fullheart.png',model=i, scale = 0.2).draw()
     
     def draw_star_bar(self):
-        pic1 = ['images/fullstar.png', 'images/fullstar.png', 'images/fullstar.png']
-        pic2 = ['images/fullstar.png', 'images/fullstar.png', 'images/emptystar.png']
-        pic3 = ['images/fullstar.png', 'images/emptystar.png', 'images/emptystar.png']
+        pic1 = ['images/fullheart.png', 'images/fullheart.png', 'images/fullheart.png']
+        pic2 = ['images/fullheart.png', 'images/fullheart.png', 'images/emptyheart.png']
+        pic3 = ['images/fullheart.png', 'images/emptyheart.png', 'images/emptyheart.png']
 
         count = 0
         for i in range(900, 1050, 70):
             if not self.world.ship.is_dead:
                 if self.world.ship.hp_ship == 2:
-                    a = arcade.Sprite(pic2[count], scale = 0.03)
+                    a = arcade.Sprite(pic2[count], scale = 0.25)
                 elif self.world.ship.hp_ship == 3:
-                    a = arcade.Sprite(pic1[count], scale = 0.03)
+                    a = arcade.Sprite(pic1[count], scale = 0.25)
                 else:
-                    a = arcade.Sprite(pic3[count], scale = 0.03)
+                    a = arcade.Sprite(pic3[count], scale = 0.25)
                 a.center_x = i
                 a.center_y = SCREEN_HEIGHT - 50
                 a.draw()
@@ -226,7 +226,6 @@ class SpaceGameWindow(arcade.Window):
 
         elif self.current_route == routes['game']:
             self.world.ship_on_key_press(key, key_modifiers)
-            
             # เขียนเงื่อนไขgameoverเพิ่ม
 
 

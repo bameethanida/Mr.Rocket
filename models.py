@@ -162,8 +162,8 @@ class World:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.background = Background(self,700,375)
-        self.background2 = Background(self,2100,375)
+        self.background = Background(self,550,350)
+        self.background2 = Background(self,1700,350)
         self.ship = Ship(self, 100, 100)
         self.bullet_list = []
         self.alien_list = []
@@ -171,7 +171,6 @@ class World:
         self.frame = 0
         self.score = 0
         self.game_over = False
-
 
     def moving_background(self):
         if self.background.x == -700:
