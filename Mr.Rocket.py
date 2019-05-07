@@ -4,6 +4,7 @@ from models import Ship,World,Background,ShipBullet,Alien
 
 SCREEN_WIDTH = 1100
 SCREEN_HEIGHT = 700
+SCREEN_TITLE = "MR. ROCKET"
 
 routes = {
     'menu' : 0,
@@ -78,14 +79,15 @@ class AlienSprite:
                 self.draw_sprite(self.alien, a.x, a.y)
     
 class SpaceGameWindow(arcade.Window):
-    def __init__(self, width, height):
-        super().__init__(width, height)
+    def __init__(self, width, height, title):
+        super().__init__(width, height, title)
 
         self.current_route = routes['menu']
         self.selecting_choice = 0
         self.menu_setup()
         self.set_mouse_visible(False)
         self.game_setup(width, height)
+        self.game_cover = arcade.load_texture('images/game_cover.png')
         self.how_to_play = arcade.load_texture('images/guide.png')
 
     def menu_setup(self):
@@ -106,8 +108,8 @@ class SpaceGameWindow(arcade.Window):
         self.how_to_play.texture_change_frames = 10
 
 
-        self.start.center_x, self.start.center_y = self.width//2, self.height//2 + 50
-        self.how_to_play.center_x, self.how_to_play.center_y = self.width//2, self.height//2 - 20
+        self.start.center_x, self.start.center_y = self.width//2, self.height//2 - 100
+        self.how_to_play.center_x, self.how_to_play.center_y = self.width//2, self.height//2 - 200
         self.start.select()
         self.how_to_play.unselect()
 
@@ -147,6 +149,7 @@ class SpaceGameWindow(arcade.Window):
                 count += 1
 
     def draw_menu(self):
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.game_cover)
         self.choice_list.draw()
     
     def draw_game_running(self):
@@ -158,7 +161,7 @@ class SpaceGameWindow(arcade.Window):
         self.draw_heart_bar()
         self.draw_heart()
          # draw score
-        arcade.draw_text("Score : " + str(self.world.score), SCREEN_WIDTH - 180, SCREEN_HEIGHT - 125, arcade.color.WHITE,20)
+        arcade.draw_text("Score : " + str(self.world.score), SCREEN_WIDTH - 180, SCREEN_HEIGHT - 125, arcade.color.WHITE, 20)
 
     def draw_how_to_play(self):
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
@@ -172,6 +175,7 @@ class SpaceGameWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         if self.current_route == routes['menu']:
+            arcade.load_texture('images/textcover.png')
             self.draw_menu()
         elif self.current_route == routes['howtoplay']:
             self.draw_how_to_play()
@@ -184,7 +188,7 @@ class SpaceGameWindow(arcade.Window):
     def update_selected_choice(self):
         for choice in self.choice_list:
             choice.unselect()
-            choice.set_texture(1)
+            choice.set_texture(0)
         self.choice_list[self.selecting_choice].select()    
 
     def update(self, delta):
@@ -236,7 +240,7 @@ class SpaceGameWindow(arcade.Window):
             self.world.ship_on_key_release(key,key_modifiers)
 
 def main():
-    SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
     
 if __name__ == '__main__':

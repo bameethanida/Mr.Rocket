@@ -5,7 +5,7 @@ SCREEN_WIDTH = 1100
 SCREEN_HEIGHT = 700
 
 BACKGROUND_SPEED = 1
-MOVEMENT_SPEED = 10
+MOVEMENT_SPEED = 15
 
 HEART_SPEED = 8
 
@@ -174,6 +174,7 @@ class World:
         self.bullet_list = []
         self.alien_list = []
         self.heart_list = []
+        self.score_list = []
         self.frame = 0
         self.score = 0
 
