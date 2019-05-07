@@ -68,13 +68,13 @@ class AlienSprite:
     def draw(self):
         for a in self.alien_list:
             if a.index[0] == 0:
-                self.alien = arcade.Sprite('./images/alien1.png')
+                self.alien = arcade.Sprite('./images/alien1.png', scale = 0.5)
                 self.draw_sprite(self.alien, a.x, a.y)
             if a.index[0] == 1:
-                self.alien = arcade.Sprite('./images/alien2.png')
+                self.alien = arcade.Sprite('./images/alien2.png', scale = 0.4)
                 self.draw_sprite(self.alien, a.x, a.y)
             if a.index[0] == 2:
-                self.alien = arcade.Sprite('./images/alien3.png')
+                self.alien = arcade.Sprite('./images/alien3.png', scale = 0.5)
                 self.draw_sprite(self.alien, a.x, a.y)
     
 class SpaceGameWindow(arcade.Window):
@@ -123,11 +123,11 @@ class SpaceGameWindow(arcade.Window):
         self.alien = AlienSprite(self.world.alien_list)
 
 
-    def draw_star(self):
-        for i in self.world.star_list:
+    def draw_heart(self):
+        for i in self.world.heart_list:
             ModelSprite('./images/fullheart.png',model=i, scale = 0.2).draw()
     
-    def draw_star_bar(self):
+    def draw_heart_bar(self):
         pic1 = ['images/fullheart.png', 'images/fullheart.png', 'images/fullheart.png']
         pic2 = ['images/fullheart.png', 'images/fullheart.png', 'images/emptyheart.png']
         pic3 = ['images/fullheart.png', 'images/emptyheart.png', 'images/emptyheart.png']
@@ -155,22 +155,19 @@ class SpaceGameWindow(arcade.Window):
         self.ship_sprite.draw()
         self.bullet.draw()
         self.alien.draw()
-        self.draw_star_bar()
-        self.draw_star()
+        self.draw_heart_bar()
+        self.draw_heart()
          # draw score
-        arcade.draw_text("Score : " + str(self.world.score), SCREEN_WIDTH - 180, SCREEN_HEIGHT - 125, arcade.color.BLACK, 20)
+        arcade.draw_text("Score : " + str(self.world.score), SCREEN_WIDTH - 180, SCREEN_HEIGHT - 125, arcade.color.WHITE,20)
 
     def draw_how_to_play(self):
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
 
     def draw_game_over(self):
+        if self.world.ship.hp_ship == 0:
+            self.world.die()
+            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
 
-        pass
-
-    def check_state(self):
-        pass
-        # if self.world.state == World.STATE_DEAD:
-        #     self.draw_game_over()       
     
     def on_draw(self):
         arcade.start_render()
@@ -180,6 +177,7 @@ class SpaceGameWindow(arcade.Window):
             self.draw_how_to_play()
         elif self.current_route == routes['game']:
             self.draw_game_running()
+            self.draw_game_over()
         elif self.current_route == routes['exit']:
             sys.exit()
 
@@ -199,6 +197,7 @@ class SpaceGameWindow(arcade.Window):
             pass
         elif self.current_route == routes['game']:
             self.world.update(delta)
+            self.draw_game_over()
         elif self.current_route == routes['exit']:
             sys.exit()
         
@@ -226,7 +225,10 @@ class SpaceGameWindow(arcade.Window):
 
         elif self.current_route == routes['game']:
             self.world.ship_on_key_press(key, key_modifiers)
-            # เขียนเงื่อนไขgameoverเพิ่ม
+            if not self.world.is_dead():
+                self.world.start()       
+            if key == arcade.key.R and self.world.state == World.STATE_DEAD:
+                 self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
 
 
     def on_key_release(self, key, key_modifiers):
