@@ -16,7 +16,7 @@ RANGE_START = 30
 BULLET_DAMAGE = 1
 
 INDEX = [0,1,2]
-SPEED_ALIEN_CHOICE = [3, 4, 6]
+SPEED_ALIEN_CHOICE = [2, 3, 5]
 HP_ALIEN_CHOICE = [1, 3, 5]
 SCORE_ALIEN_CHOICE = [5, 10, 20]
 
@@ -96,10 +96,24 @@ class Alien:
     def move(self):
         self.x -= self.speed
     
+    def generate_new_speed(self):
+        if 0 <= self.world.score < 60:
+            self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
+        elif 60 <= self.world.score <= 120:
+            self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 3
+        elif 121 <= self.world.score <= 170:
+            self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 5
+        elif 171 <= self.world.score <= 260:
+            self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 5.5
+        else:
+            self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 6
+
+        
+
     def alien_dead(self):
         if self.hp_alien <= 0:
             self.is_dead = True
-    
+
     def remove_alien(self):
         if self.x < 0:
             self.world.alien_list.remove(self) 
@@ -109,6 +123,7 @@ class Alien:
         
     def update(self, delta):
         self.move()
+        self.generate_new_speed()
         self.alien_dead()
         self.remove_alien()
 
@@ -250,19 +265,6 @@ class World:
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
 
-    def update_alien_speed(self):
-        if self.score >= 50:
-            for i in self.alien_list:
-                i.speed += 1.2
-        elif self.score >= 100:
-            pass
-        elif self.score >= 150:
-            pass
-        elif self.score >= 200:
-            pass
-        else:
-            pass
-
 
 
     def update(self, delta):
@@ -275,7 +277,6 @@ class World:
         self.moving_background()
         self.ship.update(delta)
         self.alien_hit_ship()
-        self.update_alien_speed()
         self.collect_heart()
         self.display_score()
         self.frame += 1
