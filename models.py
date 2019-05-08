@@ -5,7 +5,7 @@ SCREEN_WIDTH = 1100
 SCREEN_HEIGHT = 700
 
 BACKGROUND_SPEED = 0.5
-MOVEMENT_SPEED = 25
+MOVEMENT_SPEED = 20
 
 HEART_SPEED = 8
 
@@ -19,7 +19,6 @@ INDEX = [0,1,2]
 SPEED_ALIEN_CHOICE = [2, 3, 5]
 HP_ALIEN_CHOICE = [1, 3, 5]
 SCORE_ALIEN_CHOICE = [5, 10, 20]
-
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -99,20 +98,20 @@ class Alien:
     def generate_new_speed(self):
         if 0 <= self.world.score < 60:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
-        elif 60 <= self.world.score <= 120:
+        elif 60 <= self.world.score < 120:
+            self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 2
+        elif 120 <= self.world.score < 170:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 3
-        elif 121 <= self.world.score <= 170:
+        elif 170 <= self.world.score < 260:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 5
-        elif 171 <= self.world.score <= 260:
-            self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 5.5
         else:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 6
-
-        
-
+    
+   
+    
     def alien_dead(self):
         if self.hp_alien <= 0:
-            self.is_dead = True
+            self.is_dead = True 
 
     def remove_alien(self):
         if self.x < 0:
@@ -148,7 +147,7 @@ class Heart:
 class ShipBullet:
     def __init__(self, world, x, y):
         self.world = world
-        self.x = 170
+        self.x = 165
         self.y = y
         self.direction = None
     
@@ -211,7 +210,6 @@ class World:
         if self.frame % 60 == 0 and len(self.alien_list) <= 10:
             self.alien_list.append(Alien(self))
 
-
     def generate_heart(self):
         if self.frame % 600 == 0 and len(self.heart_list) <= 0:
             self.heart_list.append(Heart(self))
@@ -246,7 +244,6 @@ class World:
     def is_dead(self):
         return self.state == World.STATE_DEAD    
 
-
     def ship_on_key_press(self, key, key_modifiers):
         if key in KEY_MAP:
             self.ship.speed = MOVEMENT_SPEED
@@ -255,6 +252,8 @@ class World:
                 self.ship.direction = self.ship.next_direction
         if key == arcade.key.SPACE:
             bullet = ShipBullet(self, self.ship.x + (RANGE_START * DIR_OFFSETS[self.ship.current_direction][0]), self.ship.y)
+            shoot_sound = arcade.sound.load_sound("sound.mp3")
+            arcade.sound.play_sound(shoot_sound)
             self.bullet_list.append(bullet)
     
     def ship_on_key_release(self, key, modifiers):
@@ -264,8 +263,6 @@ class World:
                 self.ship.speed = 0
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
-
-
 
     def update(self, delta):
         if self.state in [World.STATE_FROZEN, World.STATE_DEAD]:

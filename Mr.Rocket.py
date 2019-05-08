@@ -1,5 +1,6 @@
 import arcade
 from models import Ship,World,Background,ShipBullet,Alien
+from playsound import playsound
 
 
 SCREEN_WIDTH = 1100
@@ -88,8 +89,8 @@ class SpaceGameWindow(arcade.Window):
         self.game_over_setup()
         self.set_mouse_visible(False)
         self.game_setup(width, height)
-        self.game_cover = arcade.load_texture('images/game_cover.png')
-        self.how_to_play = arcade.load_texture('images/guide.png')
+        self.game_cover = arcade.load_texture('images/background1.png')
+        self.how_to_play = arcade.load_texture('images/gameguide.png')
 
     def menu_setup(self):
         
@@ -110,8 +111,8 @@ class SpaceGameWindow(arcade.Window):
         self.how_to_play.texture_change_frames = 10
 
 
-        self.start.center_x, self.start.center_y = self.width//2, self.height//2 - 100
-        self.how_to_play.center_x, self.how_to_play.center_y = self.width//2, self.height//2 - 200
+        self.start.center_x, self.start.center_y = self.width//2, self.height//2 - 150
+        self.how_to_play.center_x, self.how_to_play.center_y = self.width//2, self.height//2 - 250
         self.start.select()
         self.how_to_play.unselect()
 
@@ -213,15 +214,14 @@ class SpaceGameWindow(arcade.Window):
             arcade.draw_text("current : " + str(self.world.latest_score), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.WHITE, 20)
             self.game_over_choice_list.draw()
 
-
-
-    
     def on_draw(self):
         arcade.start_render()
         if self.current_route == routes['menu']:
             self.draw_menu()
             game_title = arcade.Sprite('images/textcover.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT // 2, scale = 1)
+            game_logo = arcade.Sprite('images/ship_upright.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT - 280, scale = 0.55)
             game_title.draw()
+            game_logo.draw()
         elif self.current_route == routes['howtoplay']:
             self.draw_how_to_play()
         elif self.current_route == routes['game']:
@@ -258,7 +258,6 @@ class SpaceGameWindow(arcade.Window):
                     choice.update_animation()
         elif self.current_route == routes['exit']:
             sys.exit()
-        
         
     def on_key_press(self, key, key_modifiers):
         if self.current_route == routes['menu']:
@@ -304,10 +303,6 @@ class SpaceGameWindow(arcade.Window):
                     self.current_route = routes[choices[self.selecting_choice]]
                     if self.current_route == routes['game']:
                         self.world.start()
-
-
-            
-
 
     def on_key_release(self, key, key_modifiers):
         if self.current_route == routes['game']:
