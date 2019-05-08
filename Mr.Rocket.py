@@ -9,13 +9,13 @@ SCREEN_TITLE = "MR. ROCKET"
 routes = {
     'menu' : 0,
     'howtoplay' : 1,
-    'game' : 2
+    'game' : 2,
 }
 
 choices = { 
     0 : 'game',
     1 : 'howtoplay',
-    2 : 'exit' 
+    2 : 'exit'
 }
 
 class ModelSprite(arcade.Sprite):
@@ -85,12 +85,14 @@ class SpaceGameWindow(arcade.Window):
         self.current_route = routes['menu']
         self.selecting_choice = 0
         self.menu_setup()
+        self.game_over_setup()
         self.set_mouse_visible(False)
         self.game_setup(width, height)
         self.game_cover = arcade.load_texture('images/game_cover.png')
         self.how_to_play = arcade.load_texture('images/guide.png')
 
     def menu_setup(self):
+        
         self.choice_list = arcade.SpriteList()
 
         # startbutton
@@ -115,7 +117,45 @@ class SpaceGameWindow(arcade.Window):
 
         self.choice_list.append(self.start)
         self.choice_list.append(self.how_to_play)
+    
+    def game_over_setup(self):
 
+        self.game_over_choice_list = arcade.SpriteList()
+
+        # restartbutton
+        self.restart = MenuChoiceSprite()
+        self.restart.textures.append(arcade.load_texture("images/RESTART.png"))
+        self.restart.textures.append(arcade.load_texture("images/RESTARTPRESS.png"))
+        self.restart.set_texture(0)
+        self.restart.texture_change_frames = 10
+
+        # menubutton
+        self.menu = MenuChoiceSprite()
+        self.menu.textures.append(arcade.load_texture("images/MENU.png"))
+        self.menu.textures.append(arcade.load_texture("images/MENUPRESS.png"))
+        self.menu.set_texture(0)
+        self.menu.texture_change_frames = 10
+
+        # exitbutton
+        self.exit = MenuChoiceSprite()
+        self.exit.textures.append(arcade.load_texture("images/EXIT.png"))
+        self.exit.textures.append(arcade.load_texture("images/EXITPRESS.png"))
+        self.exit.set_texture(0)
+        self.exit.texture_change_frames = 10
+
+        self.restart.center_x, self.restart.center_y = self.width//2, self.height//2 - 100
+        self.menu.center_x, self.menu.center_y = self.width//2, self.height//2 - 200
+        self.exit.center_x, self.exit.center_y = self.width//2, self.height//2 - 300
+        
+        self.start.select()
+        self.menu.unselect()
+        self.exit.unselect()
+
+        self.game_over_choice_list.append(self.restart)
+        self.game_over_choice_list.append(self.menu)
+        self.game_over_choice_list.append(self.exit)
+
+    
     def game_setup(self, width, height):
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.background_sprite = ModelSprite('./images/background1.png', model=self.world.background)
@@ -170,13 +210,18 @@ class SpaceGameWindow(arcade.Window):
         if self.world.ship.hp_ship == 0:
             self.world.die()
             arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
+            arcade.draw_text("current : " + str(self.world.latest_score), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.WHITE, 20)
+            self.game_over_choice_list.draw()
+
+
 
     
     def on_draw(self):
         arcade.start_render()
         if self.current_route == routes['menu']:
-            arcade.load_texture('images/textcover.png')
             self.draw_menu()
+            game_title = arcade.Sprite('images/textcover.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT // 2, scale = 1)
+            game_title.draw()
         elif self.current_route == routes['howtoplay']:
             self.draw_how_to_play()
         elif self.current_route == routes['game']:
@@ -191,6 +236,11 @@ class SpaceGameWindow(arcade.Window):
             choice.set_texture(0)
         self.choice_list[self.selecting_choice].select()    
 
+        for choice in self.game_over_choice_list:
+            choice.unselect()
+            choice.set_texture(0)
+        self.game_over_choice_list[self.selecting_choice].select()    
+
     def update(self, delta):
         if self.current_route == routes['menu']:
             for choice in self.choice_list:
@@ -202,6 +252,10 @@ class SpaceGameWindow(arcade.Window):
         elif self.current_route == routes['game']:
             self.world.update(delta)
             self.draw_game_over()
+            for choice in self.game_over_choice_list:
+                if choice.is_select == True:
+                    choice.update()
+                    choice.update_animation()
         elif self.current_route == routes['exit']:
             sys.exit()
         
@@ -209,7 +263,7 @@ class SpaceGameWindow(arcade.Window):
     def on_key_press(self, key, key_modifiers):
         if self.current_route == routes['menu']:
             if key == arcade.key.DOWN:
-                if self.selecting_choice < 2:
+                if self.selecting_choice < 1:
                     self.selecting_choice += 1
                 else:
                     self.selecting_choice = 0
@@ -218,21 +272,41 @@ class SpaceGameWindow(arcade.Window):
                 if self.selecting_choice > 0 :  
                     self.selecting_choice -= 1
                 else:
-                    self.selecting_choice = 2
+                    self.selecting_choice = 1
                 self.update_selected_choice()        
             elif key == arcade.key.ENTER:
                 self.current_route = routes[choices[self.selecting_choice]]
 
         elif self.current_route == routes['howtoplay']:
-            if key == arcade.key.DELETE:
+            if key == arcade.key.ENTER:
                 self.current_route = routes['menu']
 
         elif self.current_route == routes['game']:
             self.world.ship_on_key_press(key, key_modifiers)
             if not self.world.is_dead():
                 self.world.start()       
-            if key == arcade.key.R and self.world.state == World.STATE_DEAD:
-                 self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
+            # if key == arcade.key.R and self.world.state == World.STATE_DEAD:
+            #     self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
+            elif self.world.is_dead():
+                if key == arcade.key.DOWN:
+                    if self.selecting_choice < 2:
+                        self.selecting_choice += 1
+                    else:
+                        self.selecting_choice = 0
+                    self.update_selected_choice()
+                elif key == arcade.key.UP:
+                    if self.selecting_choice > 0 :
+                        self.selecting_choice -= 1
+                    else:
+                        self.selecting_choice = 2
+                    self.update_selected_choice()
+                elif key == arcade.key.ENTER:
+                    self.current_route = routes[choices[self.selecting_choice]]
+                    if self.current_route == routes['game']:
+                        self.world.start()
+
+
+            
 
 
     def on_key_release(self, key, key_modifiers):

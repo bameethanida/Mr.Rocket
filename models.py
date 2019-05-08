@@ -4,19 +4,19 @@ from random import randint,choices
 SCREEN_WIDTH = 1100
 SCREEN_HEIGHT = 700
 
-BACKGROUND_SPEED = 1
-MOVEMENT_SPEED = 15
+BACKGROUND_SPEED = 0.5
+MOVEMENT_SPEED = 25
 
 HEART_SPEED = 8
 
-BULLET_SPEED = 15
+BULLET_SPEED = 20
 BULLET_RANGE = 1000
 BULLET_RADIUS = 32
 RANGE_START = 30
 BULLET_DAMAGE = 1
 
 INDEX = [0,1,2]
-SPEED_ALIEN_CHOICE = [randint(2,3), randint(4,5), 6]
+SPEED_ALIEN_CHOICE = [3, 4, 6]
 HP_ALIEN_CHOICE = [1, 3, 5]
 SCORE_ALIEN_CHOICE = [5, 10, 20]
 
@@ -143,7 +143,7 @@ class ShipBullet:
     
     def check_bullet_hit_alien(self):
         for i in self.world.alien_list:
-            if abs(self.x - i.x) <= 20 and abs(self.y - i.y) <= 20:
+            if abs(self.x - i.x) <= 50 and abs(self.y - i.y) <= 50:
                 i.hp_alien -= BULLET_DAMAGE
                 self.world.bullet_list.remove(self)
 
@@ -165,11 +165,12 @@ class World:
     STATE_DEAD = 3
     
     def __init__(self, width, height):
+
         self.width = width
         self.height = height
         self.state = World.STATE_FROZEN
-        self.background = Background(self,550,350)
-        self.background2 = Background(self,1700,350)
+        self.background = Background(self, 550, 350)
+        self.background2 = Background(self, 1700, 350)
         self.ship = Ship(self, 100, 100)
         self.bullet_list = []
         self.alien_list = []
@@ -177,6 +178,12 @@ class World:
         self.score_list = []
         self.frame = 0
         self.score = 0
+        self.latest_score = 0
+
+    def display_score(self):
+        if self.ship.hp_ship == 0:
+            self.score_list.append(self.score)
+            self.latest_score = self.score
 
     def moving_background(self):
         if self.background.x == -700:
@@ -189,13 +196,14 @@ class World:
         if self.frame % 60 == 0 and len(self.alien_list) <= 10:
             self.alien_list.append(Alien(self))
 
+
     def generate_heart(self):
         if self.frame % 600 == 0 and len(self.heart_list) <= 0:
             self.heart_list.append(Heart(self))
     
     def alien_hit_ship(self):
         for i in self.alien_list:
-            if self.ship.x + 50 <= i.x <= self.ship.x + 100:
+            if self.ship.x + 60 <= i.x <= self.ship.x + 120:
                 if self.ship.y - 50 <= i.y <= self.ship.y + 50:
                     self.ship.hp_ship -= 1
                     self.alien_list.remove(i)
@@ -207,7 +215,6 @@ class World:
                     self.heart_list.remove(i)
                     if 0 < self.ship.hp_ship < 3:
                         self.ship.hp_ship += 1
-    
     
     def start(self):
         self.state = World.STATE_STARTED
@@ -240,9 +247,23 @@ class World:
             if self.ship.direction != DIR_STILL:
                 self.ship.direction = DIR_STILL
                 self.ship.speed = 0
-            
             if not self.ship.direction == self.ship.next_direction:
                 self.ship.direction = self.ship.next_direction
+
+    def update_alien_speed(self):
+        if self.score >= 50:
+            for i in self.alien_list:
+                i.speed += 1.2
+        elif self.score >= 100:
+            pass
+        elif self.score >= 150:
+            pass
+        elif self.score >= 200:
+            pass
+        else:
+            pass
+
+
 
     def update(self, delta):
         if self.state in [World.STATE_FROZEN, World.STATE_DEAD]:
@@ -254,9 +275,10 @@ class World:
         self.moving_background()
         self.ship.update(delta)
         self.alien_hit_ship()
+        self.update_alien_speed()
         self.collect_heart()
+        self.display_score()
         self.frame += 1
-
         for i in self.bullet_list:
             i.update(delta)
         for i in self.alien_list:
