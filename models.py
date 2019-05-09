@@ -227,7 +227,10 @@ class World:
                 if self.ship.y - 50 <= i.y <= self.ship.y + 50:
                     self.heart_list.remove(i)
                     if 0 < self.ship.hp_ship < 3:
+                        powerup_sound = arcade.sound.load_sound("powerup.wav")
+                        arcade.sound.play_sound(powerup_sound)
                         self.ship.hp_ship += 1
+                        
     
     def start(self):
         self.state = World.STATE_STARTED

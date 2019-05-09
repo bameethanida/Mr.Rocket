@@ -215,9 +215,10 @@ class SpaceGameWindow(arcade.Window):
         if self.world.ship.hp_ship == 0:
             self.world.die()
             arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.gameover)
-            
-            arcade.draw_text("GAME OVER", SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.BLACK, 100)
-            arcade.draw_text("YOUR SCORE : " + str(self.world.latest_score), SCREEN_WIDTH //2, SCREEN_HEIGHT // 2, arcade.color.BLACK, 50)
+
+            arcade.draw_text("GAME OVER", 150, 550, arcade.color.BLACK, 100)
+            arcade.draw_text("YOUR SCORE" , 300, 450, arcade.color.BLACK, 50)
+            arcade.draw_text(str(self.world.latest_score), SCREEN_WIDTH // 2, 350, arcade.color.BLACK, 60)
             self.game_over_choice_list.draw()
 
     def on_draw(self):
