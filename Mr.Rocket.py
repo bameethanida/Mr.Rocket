@@ -1,4 +1,5 @@
 import arcade
+import sys
 from models import Ship,World,Background,ShipBullet,Alien
 from playsound import playsound
 
@@ -11,6 +12,7 @@ routes = {
     'menu' : 0,
     'howtoplay' : 1,
     'game' : 2,
+    'exit' :3,
 }
 
 choices = { 
@@ -232,15 +234,17 @@ class SpaceGameWindow(arcade.Window):
             sys.exit()
 
     def update_selected_choice(self):
-        for choice in self.choice_list:
-            choice.unselect()
-            choice.set_texture(0)
-        self.choice_list[self.selecting_choice].select()    
+        if self.current_route == routes['menu']:
+            for choice in self.choice_list:
+                choice.unselect()
+                choice.set_texture(0)
+            self.choice_list[self.selecting_choice].select()    
 
-        for choice in self.game_over_choice_list:
-            choice.unselect()
-            choice.set_texture(0)
-        self.game_over_choice_list[self.selecting_choice].select()    
+        elif self.current_route == routes['game']:
+            for choice in self.game_over_choice_list:
+                choice.unselect()
+                choice.set_texture(0)
+            self.game_over_choice_list[self.selecting_choice].select()    
 
     def update(self, delta):
         if self.current_route == routes['menu']:
@@ -280,6 +284,7 @@ class SpaceGameWindow(arcade.Window):
         elif self.current_route == routes['howtoplay']:
             if key == arcade.key.ENTER:
                 self.current_route = routes['menu']
+                
 
         elif self.current_route == routes['game']:
             self.world.ship_on_key_press(key, key_modifiers)
@@ -303,7 +308,12 @@ class SpaceGameWindow(arcade.Window):
                 elif key == arcade.key.ENTER:
                     self.current_route = routes[choices[self.selecting_choice]]
                     if self.current_route == routes['game']:
+                        self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
                         self.world.start()
+                    
+                    elif self.current_route == routes['menu']:
+                        self.draw_menu()
+                        self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
 
     def on_key_release(self, key, key_modifiers):
         if self.current_route == routes['game']:
