@@ -214,8 +214,10 @@ class SpaceGameWindow(arcade.Window):
         if self.world.ship.hp_ship == 0:
             self.world.die()
             arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
+            game_over = arcade.Sprite('images/text_gameover.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT - 150, scale = 0.2)
             arcade.draw_text("current : " + str(self.world.latest_score), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.WHITE, 20)
             self.game_over_choice_list.draw()
+            game_over.draw()
 
     def on_draw(self):
         arcade.start_render()
@@ -289,9 +291,7 @@ class SpaceGameWindow(arcade.Window):
         elif self.current_route == routes['game']:
             self.world.ship_on_key_press(key, key_modifiers)
             if not self.world.is_dead():
-                self.world.start()       
-            # if key == arcade.key.R and self.world.state == World.STATE_DEAD:
-            #     self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
+                self.world.start()
             elif self.world.is_dead():
                 if key == arcade.key.DOWN:
                     if self.selecting_choice < 2:
@@ -302,7 +302,7 @@ class SpaceGameWindow(arcade.Window):
                 elif key == arcade.key.UP:
                     if self.selecting_choice > 0 :
                         self.selecting_choice -= 1
-                    else:
+                    else: 
                         self.selecting_choice = 2
                     self.update_selected_choice()
                 elif key == arcade.key.ENTER:

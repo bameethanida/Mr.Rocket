@@ -87,7 +87,8 @@ class Alien:
         self.x = self.world.width - 1
         self.y = randint(50, SCREEN_HEIGHT - 50)
         self.index = choices(INDEX, weights = [4, 2, 1])
-        self.speed = SPEED_ALIEN_CHOICE[self.index[0]]
+        self.speed_increase = 1
+        self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * (self.speed_increase * 1.5)
         self.hp_alien = HP_ALIEN_CHOICE[self.index[0]]
         self.score_alien = SCORE_ALIEN_CHOICE[self.index[0]]
         self.is_dead = False
@@ -106,6 +107,12 @@ class Alien:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 5
         else:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 6
+        
+    # def generate_new_speed(self):
+    #     if self.world.frame_speed >= 900:
+    #         self.speed_increase += 1
+    #         self.world.frame_speed = 0
+
     
     
     def alien_dead(self):
@@ -183,13 +190,14 @@ class World:
         self.height = height
         self.state = World.STATE_FROZEN
         self.background = Background(self, 550, 350)
-        self.background2 = Background(self, 1700, 350)
+        self.background2 = Background(self, 1650, 350)
         self.ship = Ship(self, 100, 100)
         self.bullet_list = []
         self.alien_list = []
         self.heart_list = []
         self.score_list = []
         self.frame = 0
+        self.frame_speed = 0
         self.score = 0
         self.latest_score = 0
 
@@ -276,6 +284,7 @@ class World:
         self.collect_heart()
         self.display_score()
         self.frame += 1
+        self.frame_speed += 1
         for i in self.bullet_list:
             i.update(delta)
         for i in self.alien_list:
