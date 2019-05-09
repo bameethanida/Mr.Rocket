@@ -107,7 +107,6 @@ class Alien:
         else:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 6
     
-   
     
     def alien_dead(self):
         if self.hp_alien <= 0:

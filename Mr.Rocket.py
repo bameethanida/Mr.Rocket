@@ -92,6 +92,7 @@ class SpaceGameWindow(arcade.Window):
         self.game_cover = arcade.load_texture('images/background1.png')
         self.how_to_play = arcade.load_texture('images/gameguide.png')
 
+
     def menu_setup(self):
         
         self.choice_list = arcade.SpriteList()
