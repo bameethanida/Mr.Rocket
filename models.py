@@ -108,13 +108,7 @@ class Alien:
         else:
             self.speed = SPEED_ALIEN_CHOICE[self.index[0]] * 6
         
-    # def generate_new_speed(self):
-    #     if self.world.frame_speed >= 900:
-    #         self.speed_increase += 1
-    #         self.world.frame_speed = 0
-
-    
-    
+   
     def alien_dead(self):
         if self.hp_alien <= 0:
             self.is_dead = True 
@@ -197,7 +191,6 @@ class World:
         self.heart_list = []
         self.score_list = []
         self.frame = 0
-        self.frame_speed = 0
         self.score = 0
         self.latest_score = 0
 
@@ -284,7 +277,6 @@ class World:
         self.collect_heart()
         self.display_score()
         self.frame += 1
-        self.frame_speed += 1
         for i in self.bullet_list:
             i.update(delta)
         for i in self.alien_list:

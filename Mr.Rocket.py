@@ -93,6 +93,7 @@ class SpaceGameWindow(arcade.Window):
         self.game_setup(width, height)
         self.game_cover = arcade.load_texture('images/background1.png')
         self.how_to_play = arcade.load_texture('images/gameguide.png')
+        self.gameover = arcade.load_texture('images/bluebg.png')
 
 
     def menu_setup(self):
@@ -213,11 +214,11 @@ class SpaceGameWindow(arcade.Window):
     def draw_game_over(self):
         if self.world.ship.hp_ship == 0:
             self.world.die()
-            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
-            game_over = arcade.Sprite('images/text_gameover.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT - 150, scale = 0.2)
-            arcade.draw_text("current : " + str(self.world.latest_score), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.WHITE, 20)
+            arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.gameover)
+            
+            arcade.draw_text("GAME OVER", SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.BLACK, 100)
+            arcade.draw_text("YOUR SCORE : " + str(self.world.latest_score), SCREEN_WIDTH //2, SCREEN_HEIGHT // 2, arcade.color.BLACK, 50)
             self.game_over_choice_list.draw()
-            game_over.draw()
 
     def on_draw(self):
         arcade.start_render()
@@ -285,9 +286,8 @@ class SpaceGameWindow(arcade.Window):
 
         elif self.current_route == routes['howtoplay']:
             if key == arcade.key.ENTER:
-                self.current_route = routes['menu']
-                
-
+                self.current_route = routes['game']
+    
         elif self.current_route == routes['game']:
             self.world.ship_on_key_press(key, key_modifiers)
             if not self.world.is_dead():
@@ -310,7 +310,6 @@ class SpaceGameWindow(arcade.Window):
                     if self.current_route == routes['game']:
                         self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
                         self.world.start()
-                    
                     elif self.current_route == routes['menu']:
                         self.draw_menu()
                         self.game_setup(SCREEN_WIDTH,SCREEN_HEIGHT)
