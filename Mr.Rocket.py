@@ -21,6 +21,12 @@ choices = {
     2 : 'exit'
 }
 
+menu_choices = { 
+    0 : 'game',
+    1 : 'howtoplay',
+    2 : 'exit'
+}
+
 class ModelSprite(arcade.Sprite):
     def __init__(self, *args, **kwargs):
         self.model = kwargs.pop('model', None)
@@ -280,9 +286,9 @@ class SpaceGameWindow(arcade.Window):
                     self.selecting_choice -= 1
                 else:
                     self.selecting_choice = 1
-                self.update_selected_choice()        
+                self.update_selected_choice()       
             elif key == arcade.key.ENTER:
-                self.current_route = routes[choices[self.selecting_choice]]
+                self.current_route = routes[menu_choices[self.selecting_choice]]
 
         elif self.current_route == routes['howtoplay']:
             if key == arcade.key.ENTER:

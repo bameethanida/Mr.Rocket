@@ -200,11 +200,11 @@ class World:
             self.latest_score = self.score
 
     def moving_background(self):
-        if self.background.x == -700:
-            self.background.x = 2100
+        if self.background.x == -550:
+            self.background.x = 1650
 
-        if self.background2.x == -700:
-            self.background2.x = 2100
+        if self.background2.x == -550:
+            self.background2.x = 1650
     
     def generate_alien(self):
         if self.frame % 60 == 0 and len(self.alien_list) <= 10:
