@@ -17,7 +17,7 @@ routes = {
 
 choices = { 
     0 : 'game',
-    1 : 'howtoplay',
+    1 : 'menu',
     2 : 'exit'
 }
 
