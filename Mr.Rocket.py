@@ -217,15 +217,28 @@ class SpaceGameWindow(arcade.Window):
     def draw_how_to_play(self):
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.how_to_play)
 
+    def hightest_score(self):
+        file = open("highestscore.txt").readline()
+        if file == "" or int(file) < int(self.world.lastest_score):
+            with open("highestscore.txt", "w") as file:
+                file.write(str(self.world.lastest_score))
+        with open("highestscore.txt", "r") as file:
+            score = file.readline()
+        return score
+
     def draw_game_over(self):
         if self.world.ship.hp_ship == 0:
+            score = self.hightest_score()
             self.world.die()
             arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, SCREEN_WIDTH, SCREEN_HEIGHT, self.gameover)
-            game_over = arcade.Sprite('images/game_over_text.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT - 200, scale = 0.3)
+            game_over = arcade.Sprite('images/game_over_text.png', center_x = SCREEN_WIDTH // 2, center_y = SCREEN_HEIGHT - 150, scale = 0.25)
             game_over.draw()
-            arcade.draw_text(str(self.world.latest_score), SCREEN_WIDTH // 2, 350, arcade.color.BLACK, 60)
+            arcade.draw_text(str(self.world.lastest_score), SCREEN_WIDTH // 2, 400, arcade.color.BLACK, 60)
+            # hightest_score
+            arcade.draw_text("HIGHEST SCORE : " + str(score), 420, 330, arcade.color.BLACK, 20)
             self.game_over_choice_list.draw()
 
+    
     def on_draw(self):
         arcade.start_render()
         if self.current_route == routes['menu']:

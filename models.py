@@ -189,15 +189,13 @@ class World:
         self.bullet_list = []
         self.alien_list = []
         self.heart_list = []
-        self.score_list = []
         self.frame = 0
         self.score = 0
-        self.latest_score = 0
+        self.lastest_score = 0
 
     def display_score(self):
         if self.ship.hp_ship == 0:
-            self.score_list.append(self.score)
-            self.latest_score = self.score
+            self.lastest_score = self.score
 
     def moving_background(self):
         if self.background.x == -550:
@@ -215,15 +213,15 @@ class World:
             self.heart_list.append(Heart(self))
     
     def alien_hit_ship(self):
-        for i in self.alien_list:
-            if self.ship.x + 60 <= i.x <= self.ship.x + 120:
-                if self.ship.y - 50 <= i.y <= self.ship.y + 50:
-                    self.ship.hp_ship -= 1
-                    self.alien_list.remove(i)
-    
+            for i in self.alien_list:
+                if i.x <= self.ship.x + 120:
+                    if self.ship.y - 50 <= i.y <= self.ship.y + 50:
+                        self.ship.hp_ship -= 1
+                        self.alien_list.remove(i)
+
     def collect_heart(self):
         for i in self.heart_list:
-            if self.ship.x + 50 <= i.x <= self.ship.x + 100:
+            if i.x <= self.ship.x + 100:
                 if self.ship.y - 50 <= i.y <= self.ship.y + 50:
                     self.heart_list.remove(i)
                     if 0 < self.ship.hp_ship < 3:
