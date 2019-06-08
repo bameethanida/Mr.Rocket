@@ -1,7 +1,7 @@
 import arcade
 import sys
 from models import Ship,World,Background,ShipBullet,Alien
-from playsound import playsound
+
 
 
 SCREEN_WIDTH = 1100
